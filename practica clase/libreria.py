@@ -1,8 +1,9 @@
-import streamlit as st
-import pandas as pd
-import os
-from PIL import Image
+import streamlit as st  # Importa la librería Streamlit para crear aplicaciones web interactivas
+import pandas as pd  # Importa pandas para trabajar con estructuras de datos como DataFrames
+import os  # Importa os para interactuar con el sistema operativo, como verificar si un archivo existe
+from PIL import Image  # Importa Image desde PIL para manejar y mostrar imágenes
 
+# Definición de la clase Libro, que representa un libro con sus atributos
 class Libro:
     def __init__(self, titulo, autor, anio, genero, isbn):
         self.titulo = titulo
@@ -14,6 +15,7 @@ class Libro:
     def __str__(self):
         return f"📚 {self.titulo}\n👤 {self.autor}\n📅 {self.anio}\n📘 {self.genero}\nISBN: {self.isbn}"
 
+# Definición de la clase Inventario, que maneja una lista de libros y las operaciones sobre ellos
 class Inventario:
     def __init__(self):
         self.libros = []
@@ -52,43 +54,45 @@ class Inventario:
     def generar_csv(self):
         data = {
             "Título": [libro.titulo for libro in self.libros],
-            "Autor": [libro.autor for libro in self.libros],
-            "Año": [libro.anio for libro in self.libros],
-            "Género": [libro.genero for libro in self.libros],
-            "ISBN": [libro.isbn for libro in self.libros],
+            "Autor": [libro.autor for libro en self.libros],
+            "Año": [libro.anio para libro en self.libros],
+            "Género": [libro.genero para libro en self.libros],
+            "ISBN": [libro.isbn para libro en self.libros],
         }
-        df = pd.DataFrame(data)
-        return df.to_csv(index=False)
+        df = pd.DataFrame(data)  # Crea un DataFrame de pandas con los datos de los libros
+        return df.to_csv(index=False)  # Genera un archivo CSV del DataFrame y lo devuelve como una cadena
 
 # Inicializa el inventario si no está en la sesión
 if "inventario" not in st.session_state:
     st.session_state.inventario = Inventario()
 
-inventario = st.session_state.inventario
+inventario = st.session_state.inventario  # Obtiene el inventario de la sesión actual
 
 # Verifica si el archivo de imagen existe y es válido
 image_path = "logolib.jpg"
 try:
     if os.path.exists(image_path):
-        img = Image.open(image_path)
-        st.sidebar.image(img, width=150)
+        img = Image.open(image_path)  # Abre la imagen si existe
+        st.sidebar.image(img, width=150)  # Muestra la imagen en la barra lateral de la aplicación
     else:
         st.warning(f"La imagen '{image_path}' no se encuentra en el directorio actual.")
 except Exception as e:
     st.error(f"Error al cargar la imagen: {e}")
 
-st.title("Gestión de Inventario de Librería")
+st.title("Gestión de Inventario de Librería")  # Título principal de la aplicación
 
+# Definición del menú con las opciones disponibles
 menu = ["Agregar libro", "Actualizar libro", "Eliminar libro", "Buscar libro", "Listar libros", "Salir"]
-choice = st.sidebar.selectbox("Menú", menu)
+choice = st.sidebar.selectbox("Menú", menu)  # Muestra el menú en la barra lateral y guarda la elección del usuario
 
 # Botón de descarga de CSV
-csv = inventario.generar_csv()
+csv = inventario.generar_csv()  # Genera el archivo CSV con los datos del inventario
 st.sidebar.download_button(label="Descargar CSV", data=csv, file_name="inventario_libros.csv", mime="text/csv")
 
+# Condicional para cada opción del menú
 if choice == "Agregar libro":
     st.subheader("Agregar un nuevo libro")
-    with st.form(key="agregar_libro_form"):
+    with st.form(key="agregar_libro_form"):  # Formulario para agregar un libro
         titulo = st.text_input("Título")
         autor = st.text_input("Autor")
         anio = st.text_input("Año")
@@ -110,7 +114,7 @@ if choice == "Agregar libro":
 
 elif choice == "Actualizar libro":
     st.subheader("Actualizar un libro existente")
-    with st.form(key="actualizar_libro_form"):
+    with st.form(key="actualizar_libro_form"):  # Formulario para actualizar un libro
         isbn = st.text_input("ISBN del libro a actualizar")
         nuevo_titulo = st.text_input("Nuevo título")
         nuevo_autor = st.text_input("Nuevo autor")
@@ -133,7 +137,7 @@ elif choice == "Actualizar libro":
 
 elif choice == "Eliminar libro":
     st.subheader("Eliminar un libro")
-    with st.form(key="eliminar_libro_form"):
+    with st.form(key="eliminar_libro_form"):  # Formulario para eliminar un libro
         isbn = st.text_input("ISBN del libro a eliminar")
         submit_button = st.form_submit_button(label="Eliminar")
 
@@ -146,7 +150,7 @@ elif choice == "Eliminar libro":
 
 elif choice == "Buscar libro":
     st.subheader("Buscar un libro por título")
-    with st.form(key="buscar_libro_form"):
+    with st.form(key="buscar_libro_form"):  # Formulario para buscar un libro
         titulo = st.text_input("Título del libro a buscar")
         submit_button = st.form_submit_button(label="Buscar")
 
@@ -162,9 +166,9 @@ elif choice == "Buscar libro":
 
 elif choice == "Listar libros":
     st.subheader("Listado de libros en el inventario")
-    libros_list = inventario.listar_libros()
-    st.text_area("Listado de libros", libros_list, height=300)
+    libros_list = inventario.listar_libros()  # Obtiene la lista de libros del inventario
+    st.text_area("Listado de libros", libros_list, height=300)  # Muestra la lista en un área de texto
 
 elif choice == "Salir":
-    st.write('<script>window.close();</script>', unsafe_allow_html=True)
-    st.stop()
+    st.write('<script>window.close();</script>', unsafe_allow_html=True)  # Cierra la aplicación
+    st.stop()  # Detiene la ejecución de Streamlit
