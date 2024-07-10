@@ -54,10 +54,10 @@ class Inventario:
     def generar_csv(self):
         data = {
             "Título": [libro.titulo for libro in self.libros],
-            "Autor": [libro.autor for libro en self.libros],
-            "Año": [libro.anio para libro en self.libros],
-            "Género": [libro.genero para libro en self.libros],
-            "ISBN": [libro.isbn para libro en self.libros],
+            "Autor": [libro.autor for libro in self.libros],
+            "Año": [libro.anio for libro in self.libros],
+            "Género": [libro.genero for libro in self.libros],
+            "ISBN": [libro.isbn for libro in self.libros],
         }
         df = pd.DataFrame(data)  # Crea un DataFrame de pandas con los datos de los libros
         return df.to_csv(index=False)  # Genera un archivo CSV del DataFrame y lo devuelve como una cadena
